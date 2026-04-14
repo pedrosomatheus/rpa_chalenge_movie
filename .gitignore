@@ -16,3 +16,6 @@ __pycache__/
 
 # PyCharm
 .idea/
+
+#Pasta temporaria
+downloads/
