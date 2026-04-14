@@ -6,13 +6,15 @@ Automação desenvolvida para o desafio do RPA Challenge (Movie Search), com foc
 
 ## 🚀 Objetivo
 
-Automatizar o fluxo de:
+Automatizar o fluxo completo de:
 
-1. Buscar filmes utilizando API
-2. Persistir dados em banco de dados
-3. Navegar no site do desafio
-4. Baixar invoices específicas
-5. Gerar um arquivo ZIP com os documentos
+1. Acessar o site do desafio
+2. Navegar até a aba **Movie Search**
+3. Buscar filmes relacionados a "Avengers"
+4. Persistir os dados em banco de dados (nome e descrição)
+5. Navegar até a aba **Invoice Extraction**
+6. Realizar o download dos arquivos 2 e 4
+7. Gerar um arquivo ZIP contendo os documentos
 
 ---
 
@@ -22,11 +24,12 @@ A solução foi construída com foco em **qualidade de código, escalabilidade e
 
 Principais decisões:
 
-- Uso de **API (TMDB)** para obter dados de filmes (mais eficiente que scraping)
-- Separação do projeto em módulos
+- Uso de **API (TMDB)** para obter dados de filmes (mais eficiente e confiável que scraping)
+- Separação do projeto em módulos (arquitetura organizada)
 - Uso de variáveis de ambiente (`.env`)
-- Download de arquivos via `requests` (mais confiável que clique em navegador)
+- Download de arquivos via `requests` (mais confiável que interação via navegador)
 - Persistência em banco de dados (MySQL)
+- Controle de duplicidade via `tmdb_id`
 
 ---
 
@@ -41,13 +44,19 @@ RPA_ChalengeMovies/
 │   ├── navigation.py
 │   ├── utils.py
 │
-├── downloads/
+├── sql/
+│   ├── dump_movies.sql
+│   ├── create_database.sql
+│   ├── create_table_movies.sql
+│
 ├── output/
+│   └── invoices_2_4.zip
 │
 ├── bot.py
-├── .env
+├── .env.example
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---
@@ -83,6 +92,8 @@ pip install -r requirements.txt
 
 ### 3. Configurar `.env`
 
+Crie um arquivo `.env` baseado no `.env.example`:
+
 ```
 BASE_URL=https://rpachallenge.com/
 TMDB_API_KEY=SUA_API_KEY
@@ -103,19 +114,33 @@ EDGE_DRIVER_PATH=C:\RPA\drivers\msedgedriver.exe
 
 ## 🗄️ Banco de Dados
 
-O sistema cria automaticamente o banco e a tabela `movies`, evitando duplicidade através do `tmdb_id`.
+O sistema:
+
+- Cria automaticamente o banco
+- Cria a tabela `movies`
+- Insere os dados dos filmes
+- Evita duplicidade utilizando `tmdb_id`
 
 ---
 
 ## 🌐 Automação Web
 
-A automação utiliza Selenium para navegação e interação com o site do desafio.
+A automação utiliza Selenium para:
+
+- Acessar o site do desafio
+- Navegar entre as abas
+- Identificar elementos dinamicamente
 
 ---
 
 ## 📥 Download das Invoices
 
-Os downloads são realizados via `requests`, garantindo maior confiabilidade.
+Os downloads são realizados via requisições HTTP (`requests`), evitando dependência do comportamento do navegador.
+
+### ✔️ Vantagens:
+- Maior estabilidade
+- Independente de pop-ups ou novas abas
+- Melhor performance
 
 ---
 
@@ -140,10 +165,11 @@ python bot.py
 ## 🧠 Diferenciais
 
 - Arquitetura modular
-- Uso de API
-- Download robusto
+- Uso de API externa
+- Download robusto via HTTP
 - Persistência em banco
-- Uso de .env
+- Controle de duplicidade
+- Separação de configuração (`.env`)
 
 ---
 
